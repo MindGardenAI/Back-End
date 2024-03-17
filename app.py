@@ -22,7 +22,7 @@ if ENV_FILE:
 app = Flask(__name__)
 app.secret_key = env.get("APP_SECRET_KEY")
 
-allowed_domains = ["https://mindgardenai.tech/",
+allowed_domains = ["https://mindgardenai.tech:443",
                    "http://localhost:3000",
                    "http://localhost:8080"]
 
