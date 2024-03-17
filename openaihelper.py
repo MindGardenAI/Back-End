@@ -1,10 +1,20 @@
 import openai
+from dotenv import find_dotenv, load_dotenv
+from os import environ as env
+
+
+
+
 class OpenAiHelper:
     def __init__(self):
+        ENV_FILE = find_dotenv()
+        if ENV_FILE:
+            load_dotenv(ENV_FILE)
         self.ai = openai
-        self.ai.api_key = ""
+        self.ai.api_key = env.get("OPENAI_KEY")
         
         
+
     def makeRandomAffirmation(self):   
         completion = self.ai.chat.completions.create(model="gpt-3.5-turbo", messages=[
             {

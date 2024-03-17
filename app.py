@@ -5,6 +5,11 @@ from os import environ as env
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
+from openaihelper import OpenAiHelper
+
+assistant = OpenAiHelper()
+
+
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
@@ -75,6 +80,10 @@ def add_entry():
 @app.route("/<usr>")
 def user(usr):
     return usr
+
+@app.route("/singleaffirmation")
+def singleaffirmation():
+    return assistant.makeRandomAffirmation()
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080, host="0.0.0.0")
