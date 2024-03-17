@@ -58,10 +58,6 @@ def logout():
             quote_via=quote_plus,
         )
     )
-    
-    
-
-
 
 
 
