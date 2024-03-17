@@ -119,7 +119,7 @@ def get_todays_entries():
 
     return json.dumps(entries, default=str)
 
-@app.route("/add_goal")
+@app.route("/add_goal", methods=["POST", "GET"])
 def add_goal():
     request_data = request.get_json()
     user = request_data["uid"]
