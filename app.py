@@ -1,5 +1,6 @@
 import json
-from flask import Flask, request, url_for, redirect, render_template, session, url_for
+
+from flask import Flask, request, url_for, redirect, render_template, session, url_for, jsonify
 from authlib.integrations.flask_client import OAuth
 from os import environ as env
 from urllib.parse import quote_plus, urlencode
@@ -80,6 +81,12 @@ def add_entry():
     out = helper.add_entry(title, body)
     return str(out)
 
+@app.route("/get_user_entries", methods = ["POST"])
+def get_user_entries():
+    request_data = request.get_json()
+    
+    user = request_data["uid"]
+    
 
 
 @app.route("/<usr>")

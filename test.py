@@ -3,9 +3,9 @@ import uuid
 
 helper = dbhelper()
 user_id = str(uuid.uuid4())
-
-print(helper.add_entry(user_id, "Monday", "I hate mondays"))
+user_id = "cf1b9ab0-bb76-497f-85ea-77a80dc565f1"
+print(helper.add_entry("Monday", "I hate mondays"))
 
 #print(helper.get_entries())
 
-print(helper.get_user_entries(user_id))
+print(helper.get_user_entries("cf1b9ab0-bb76-497f-85ea-77a80dc565f1"))
