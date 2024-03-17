@@ -59,9 +59,9 @@ class dbhelper():
                 entries.append(entry)
         return entries
     
-    def add_goal(self, user_id, description, complete_by_date):
+    def add_goal(self, user_id, title, content):
         curr_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        entry_id = self.goals.insert_one({"uid": user_id, "description": description, "create_data": curr_time, "complete_by_date": complete_by_date}).inserted_id
+        entry_id = self.goals.insert_one({"uid": user_id, "title": title, "create_data": curr_time, "content": content}).inserted_id
         return str(entry_id)
     
     def get_user_goals(self, user_id):

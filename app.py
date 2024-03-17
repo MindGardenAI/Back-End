@@ -123,10 +123,10 @@ def get_todays_entries():
 def add_goal():
     request_data = request.get_json()
     user = request_data["uid"]
-    description = request_data["description"]
-    complete_by_date = request_data["complete_by_date"]
+    title = request_data["title"]
+    content = request_data["content"]
     
-    out =  helper.add_goal(user, description, complete_by_date)
+    out =  helper.add_goal(user, title, content)
     
     return str(out)
 
