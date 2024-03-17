@@ -16,7 +16,8 @@ except Exception as e:
     
 db = client.MindGardenAI
 journal_entries = db.journal_entries
-curr_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+
+curr_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 entry_id = journal_entries.insert_one({"title": "My Thoughts", "time": curr_time, "text": "Today I ate an orange."}).inserted_id
 print(entry_id)
