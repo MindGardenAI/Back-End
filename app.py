@@ -31,8 +31,8 @@ allowed_domains = ["https://mindgardenai.tech:443",
                    "http://localhost:3000",
                    "http://localhost:8080"]
 
-cors = CORS(app, resources={r"*": {"origins": "*"}}, origins=allowed_domains)
-app.config['CORS_HEADERS'] = 'Content-Type'
+cors = CORS(app, origins=allowed_domains)
+# app.config['CORS_HEADERS'] = 'Content-Type'
 
 oauth = OAuth(app)
 oauth.register(
