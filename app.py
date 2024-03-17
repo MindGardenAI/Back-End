@@ -130,7 +130,6 @@ def add_goal():
     
     return str(out)
 
-
 @app.route("/get_user_goals", methods=["GET", "POST"])
 def get_user_goals():
     request_data = request.get_json()
