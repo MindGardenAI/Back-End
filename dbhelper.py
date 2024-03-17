@@ -15,6 +15,7 @@ class dbhelper():
             
         self.db = self.client.MindGardenAI
         self.journal_entries = self.db.journal_entries
+        self.goals = self.db.goals
     
     def ping(self):
         try:
@@ -57,5 +58,16 @@ class dbhelper():
             if str(entry_day) == today:
                 entries.append(entry)
         return entries
+    
+    def add_goal(self, user_id, description, complete_by_date):
+        curr_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        entry_id = self.goals.insert_one({"uid": user_id, "description": description, "create_data": curr_time, "complete_by_date": complete_by_date}).inserted_id
+        return str(entry_id)
+    
+    def get_user_goals(self, user_id):
+        goals = list()
+        for goal in self.goals.find({"uid": user_id}):
+            goals.append(goal)
+        return goals
 
 
