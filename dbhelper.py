@@ -11,7 +11,7 @@ class dbhelper():
         
 
         # Create a new client and connect to the server
-        self.client = MongoClient(uri, maxIdleTimeMS=60000)
+        self.client = MongoClient(uri, maxIdleTimeMS=60000, connect=False)
             
         self.db = self.client.MindGardenAI
         self.journal_entries = self.db.journal_entries
