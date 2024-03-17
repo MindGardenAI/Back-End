@@ -9,9 +9,9 @@ class dbhelper():
         uri = f"mongodb+srv://bmattblake:{mongodb_pass}@cluster0.vk4vz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
         # Create a new client and connect to the server
-        client = MongoClient(uri)
+        self.client = MongoClient(uri)
             
-        self.db = client.MindGardenAI
+        self.db = self.client.MindGardenAI
         self.journal_entries = self.db.journal_entries
     
     def ping(self):
