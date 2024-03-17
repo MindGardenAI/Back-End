@@ -91,10 +91,10 @@ def add_entry():
     
     request_data = request.get_json()
 
-    title = request_data["title"]
+    user_id = request_data["uid"]
     body = request_data["body"]
     
-    out = helper.add_entry(title, body)
+    out = helper.add_entry(user_id, body)
     return str(out)
 
 @app.route("/get_user_entries", methods = ["GET", "POST"])
