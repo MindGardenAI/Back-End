@@ -6,10 +6,11 @@ from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
 from openaihelper import OpenAiHelper
+from dbhelper import dbhelper
 
 
 assistant = OpenAiHelper()
-
+helper = dbhelper()
 
 
 ENV_FILE = find_dotenv()
@@ -76,9 +77,8 @@ def add_entry():
     title = request_data["title"]
     body = request_data["body"]
     
-
-    out = f"{body} + {title}"
-    return out
+    out = helper.add_entry(title, body)
+    return str(out)
 
 
 
