@@ -119,6 +119,17 @@ def user(usr):
 def singleaffirmation():
     return assistant.makeRandomAffirmation()
 
+@app.route("/guidedaffirmation", methods = ["POST"])
+def guidedaffirmation():
+    data = request.json
+    problem = data.get('problem')
+    affirmations = assistant.makeGuidedAffirmation(problem)
+    print(problem)
+    print(affirmations)
+    return affirmations
+
 if __name__ == "__main__":
     app.run(debug=True, port=8080, host="0.0.0.0")
+
+
 
