@@ -29,7 +29,8 @@ app.secret_key = env.get("APP_SECRET_KEY")
 
 allowed_domains = ["https://mindgardenai.tech:443",
                    "http://localhost:3000",
-                   "http://localhost:8080"]
+                   "http://localhost:8080",
+                   "https://back-end-qukwylxm3a-uk.a.run.app:443"]
 
 cors = CORS(app, resources={r"*": {"origins": "*"}}, origins=allowed_domains)
 app.config['CORS_HEADERS'] = 'Content-Type'
