@@ -33,6 +33,7 @@ class apphelper():
     def display(self):
         print(self.entry)
     
+    
 apphelper()
 
 
