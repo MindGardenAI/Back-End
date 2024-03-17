@@ -91,7 +91,7 @@ def get_user_entries():
 
     return entries
 
-@app.route("/get_user_entries", methods = ["POST"])
+@app.route("/get_todays_entries", methods = ["POST"])
 def get_user_entries():
     request_data = request.get_json()
     
