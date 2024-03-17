@@ -6,9 +6,18 @@ from authlib.integrations.flask_client import OAuth
 from os import environ as env
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
+from authlib.integrations.flask_oauth2 import ResourceProtector
+from validator import Auth0JWTBearerTokenValidator
 from dotenv import find_dotenv, load_dotenv
 from openaihelper import OpenAiHelper
 from dbhelper import dbhelper
+
+require_auth = ResourceProtector()
+validator = Auth0JWTBearerTokenValidator(
+    "dev-yy8fgw47geoyejns.us.auth0.com",
+    "https://mindgardenai.tech/"
+)
+require_auth.register_token_validator(validator)
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -45,6 +54,39 @@ oauth.register(
     },
     server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration'
 )
+
+@app.route("/api/public")
+def public():
+    """No access token required."""
+    response = (
+        "Hello from a public endpoint! You don't need to be"
+        " authenticated to see this."
+    )
+    return jsonify(message=response)
+
+
+# @app.route("/api/private")
+# @require_auth(None)
+# def private():
+#     """A valid access token is required."""
+#     response = (
+#         "Hello from a private endpoint! You need to be"
+#         " authenticated to see this."
+#     )
+#     return jsonify(message=response)
+
+
+# @app.route("/api/private-scoped")
+# @require_auth("read:messages")
+# def private_scoped():
+#     """A valid access token and scope are required."""
+#     response = (
+#         "Hello from a private endpoint! You need to be"
+#         " authenticated and have a scope of read:messages to see"
+#         " this."
+#     )
+#     return jsonify(message=response)
+
 
 
 @app.route("/")
@@ -122,6 +164,7 @@ def user(usr):
     return usr
 
 @app.route("/singleaffirmation")
+@require_auth(None)
 def singleaffirmation():
     return assistant.makeRandomAffirmation()
 
