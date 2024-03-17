@@ -86,13 +86,15 @@ def logout():
 
 @app.route("/add_goal", methods=["POST", "GET"])
 def add_goal():
-    if request.method == "GET":
-        return "fizz"
-    elif request.method == "POST":
-        return "buzz"
-        out =  helper.add_goal(user, title, content)
+    request_data = request.get_json()
+
+    user_id = request_data["uid"]
+    title = request_data["title"]
+    content = request_data["content"]
     
-    #return str(out)
+    out =  helper.add_goal(user_id, title, content)
+    
+    return str(out)
 
 @app.route("/get_user_goals", methods=["GET", "POST"])
 def get_user_goals():
