@@ -1,6 +1,7 @@
 import json
 
-from flask import Flask, request, url_for, redirect, render_template, session, url_for, jsonify
+from flask import Flask, request, url_for, redirect, render_template, session, url_for, jsonify, Response
+from flask_cors import CORS, cross_origin
 from authlib.integrations.flask_client import OAuth
 from os import environ as env
 from urllib.parse import quote_plus, urlencode
@@ -20,6 +21,13 @@ if ENV_FILE:
 
 app = Flask(__name__)
 app.secret_key = env.get("APP_SECRET_KEY")
+
+allowed_domains = ["https://mindgardenai.tech/",
+                   "http://localhost:3000",
+                   "http://localhost:8080"]
+
+cors = CORS(app, resources={r"*": {"origins": "*"}}, origins=allowed_domains)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 oauth = OAuth(app)
 oauth.register(
@@ -87,17 +95,19 @@ def get_user_entries():
     
     user = request_data["uid"]
     
-    entries = helper.get_user_entries(user)
+    entries = helper.get_user_entries(str(user))
 
-    return entries
+    print(type(entries))
+    print(entries)
+    return json.dumps(entries)
 
 @app.route("/get_todays_entries", methods = ["POST"])
-def get_user_entries():
+def get_todays_entries():
     request_data = request.get_json()
     
     user = request_data["uid"]
     
-    entries = helper.get_todays_entries(user)
+    entries = helper.get_todays_entries(str(user))
 
     return entries
 
