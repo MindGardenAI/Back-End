@@ -85,7 +85,7 @@ def logout():
 
 
 
-@app.route("/add_entry", methods=["POST"])
+@app.route("/add_entry", methods=["GET", "POST"])
 def add_entry():
     
     
