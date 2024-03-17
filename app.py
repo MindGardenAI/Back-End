@@ -1,5 +1,5 @@
 import json
-
+from bson import ObjectId
 from flask import Flask, request, url_for, redirect, render_template, session, url_for, jsonify, Response
 from flask_cors import CORS, cross_origin
 from authlib.integrations.flask_client import OAuth
@@ -10,6 +10,11 @@ from dotenv import find_dotenv, load_dotenv
 from openaihelper import OpenAiHelper
 from dbhelper import dbhelper
 
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
 
 assistant = OpenAiHelper()
 helper = dbhelper()
@@ -99,7 +104,7 @@ def get_user_entries():
 
     print(type(entries))
     print(entries)
-    return json.dumps(entries)
+    return json.dumps(entries, default=str)
 
 @app.route("/get_todays_entries", methods = ["POST"])
 def get_todays_entries():
@@ -109,7 +114,7 @@ def get_todays_entries():
     
     entries = helper.get_todays_entries(str(user))
 
-    return entries
+    return json.dumps(entries, default=str)
 
 @app.route("/<usr>")
 def user(usr):
