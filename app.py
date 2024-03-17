@@ -95,7 +95,7 @@ def add_entry():
     out = helper.add_entry(title, body)
     return str(out)
 
-@app.route("/get_user_entries", methods = ["POST"])
+@app.route("/get_user_entries", methods = ["GET", "POST"])
 def get_user_entries():
     request_data = request.get_json()
     
@@ -107,7 +107,7 @@ def get_user_entries():
     print(entries)
     return json.dumps(entries, default=str)
 
-@app.route("/get_todays_entries", methods = ["POST"])
+@app.route("/get_todays_entries", methods = ["GET", "POST"])
 def get_todays_entries():
     request_data = request.get_json()
     
