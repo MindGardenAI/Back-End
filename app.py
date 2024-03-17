@@ -84,6 +84,22 @@ def logout():
     )
 
 
+@app.route("/add_goals", methods=["POST", "GET"])
+def add_goal():
+    if request.method == "GET":
+        return "fizz"
+    elif request.method == "POST":
+        return "buzz"
+        out =  helper.add_goal(user, title, content)
+    
+    #return str(out)
+
+@app.route("/get_user_goals", methods=["GET", "POST"])
+def get_user_goals():
+    request_data = request.get_json()
+    user = request_data["uid"]
+    goals = helper.get_user_goals(str(user))
+    return json.dumps(goals, default=str)
 
 @app.route("/add_entry", methods=["GET", "POST"])
 def add_entry():
@@ -119,22 +135,7 @@ def get_todays_entries():
 
     return json.dumps(entries, default=str)
 
-@app.route("/add_goals", methods=["POST", "GET"])
-def add_goal():
-    if request.method == "GET":
-        return "fizz"
-    elif request.method == "POST":
-        return "buzz"
-        out =  helper.add_goal(user, title, content)
-    
-    #return str(out)
 
-@app.route("/get_user_goals", methods=["GET", "POST"])
-def get_user_goals():
-    request_data = request.get_json()
-    user = request_data["uid"]
-    goals = helper.get_user_goals(str(user))
-    return json.dumps(goals, default=str)
     
 @app.route("/singleaffirmation")
 def singleaffirmation():
