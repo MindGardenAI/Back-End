@@ -39,7 +39,9 @@ app.secret_key = env.get("APP_SECRET_KEY")
 allowed_domains = ["https://mindgardenai.tech:443",
                    "http://localhost:3000",
                    "http://localhost:8080",
-                   "https://back-end-qukwylxm3a-uk.a.run.app:443"]
+                   "https://back-end-qukwylxm3a-uk.a.run.app:443",
+                   "cluster0-shard-00-01.vk4vz.mongodb.net:27017",
+                   "cluster0-shard-00-00.vk4vz.mongodb.net:27017"]
 
 cors = CORS(app, origins=allowed_domains)
 # app.config['CORS_HEADERS'] = 'Content-Type'
@@ -131,10 +133,10 @@ def add_entry():
     
     request_data = request.get_json()
 
-    title = request_data["title"]
+    user_id = request_data["uid"]
     body = request_data["body"]
     
-    out = helper.add_entry(title, body)
+    out = helper.add_entry(user_id, body)
     return str(out)
 
 @app.route("/get_user_entries", methods = ["GET", "POST"])

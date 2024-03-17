@@ -2,16 +2,18 @@ import os
 import datetime
 from pymongo.mongo_client import MongoClient
 
+
 class dbhelper():
     def __init__(self):          
         mongodb_pass = (os.getenv("MONGO_PASS"))
         mongodb_pass = "Kbt070322MDB"
         uri = f"mongodb+srv://bmattblake:{mongodb_pass}@cluster0.vk4vz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+        
 
         # Create a new client and connect to the server
-        client = MongoClient(uri)
+        self.client = MongoClient(uri, maxIdleTimeMS=60000, connect=False)
             
-        self.db = client.MindGardenAI
+        self.db = self.client.MindGardenAI
         self.journal_entries = self.db.journal_entries
     
     def ping(self):
@@ -21,9 +23,9 @@ class dbhelper():
         except Exception as e:
             print(e)
 
-    def add_entry(self, title, text):
+    def add_entry(self, uid, body):
         curr_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        entry_id = self.journal_entries.insert_one({"title": title, "time": curr_time, "text": text}).inserted_id
+        entry_id = self.journal_entries.insert_one({"uid": uid, "time": curr_time, "body": body}).inserted_id
         return entry_id
     
     '''def add_entry(self,uid, title, text):
