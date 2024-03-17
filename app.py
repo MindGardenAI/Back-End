@@ -1,33 +1,67 @@
-import os
-from flask import Flask, request, url_for, redirect
+import json
+from flask import Flask, request, url_for, redirect, render_template, session, url_for
 from authlib.integrations.flask_client import OAuth
+from os import environ as env
+from urllib.parse import quote_plus, urlencode
+from authlib.integrations.flask_client import OAuth
+from dotenv import find_dotenv, load_dotenv
+
+ENV_FILE = find_dotenv()
+if ENV_FILE:
+    load_dotenv(ENV_FILE)
 
 app = Flask(__name__)
-oauth = OAuth(app)
+app.secret_key = env.get("APP_SECRET_KEY")
 
-# Google OAuth registration
-google = oauth.register(
-    name='google',
-    client_id=os.getenv("GOOGLE_CLIENT_ID"), # TODO: get google client ID
-    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"), # TODO: get google client Secret
-    access_token_url='https://accounts.google.com/o/oauth2/token',
-    access_token_params=None,
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
-    authorize_params=None,
-    api_base_url='https://www.googleapis.com/oauth2/v1/',
-    userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',  # This is only needed if using openId to fetch user info
-    client_kwargs={'scope': 'email profile'},
-    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration'
+oauth = OAuth(app)
+oauth.register(
+    "auth0",
+    client_id=env.get("AUTH0_CLIENT_ID"),
+    client_secret=env.get("AUTH0_CLIENT_SECRET"),
+    client_kwargs={
+        "scope": "openid profile email",
+    },
+    server_metadata_url=f'https://{env.get("AUTH0_DOMAIN")}/.well-known/openid-configuration'
 )
+
 
 @app.route("/")
 def home():
-    return "<h1>Hello MindGardenAI, from Flask</h1>"
+    return render_template("home.html", session=session.get('user'), pretty=json.dumps(session.get('user'), indent=4)
+)
+
+# Auth0 Code that i copied from the documentation
+@app.route("/login")
+def login():
+    print(url_for("callback", _external=True))
+    return oauth.auth0.authorize_redirect(
+        redirect_uri=url_for("callback", _external=True)
+    )
+    
+@app.route("/callback", methods=["GET", "POST"])
+def callback():
+    token = oauth.auth0.authorize_access_token()
+    session["user"] = token
+    return redirect("/")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(
+        "https://" + env.get("AUTH0_DOMAIN")
+        + "/v2/logout?"
+        + urlencode(
+            {
+                "returnTo": url_for("home", _external=True),
+                "client_id": env.get("AUTH0_CLIENT_ID"),
+            },
+            quote_via=quote_plus,
+        )
+    )
+    
+    
 
 
-@app.route("/blingbling")
-def blingbling():
-    return "<div>Yahoooooo</div>"
 
 
 
@@ -40,22 +74,6 @@ def add_entry():
 
     out = f"{id} + {title}"
     return out
-    
-# User login (OAuth)
-@app.route('/login')
-def login():
-    redirect_uri = url_for('authorize', _external=True)
-    return oauth.twitter.authorize_redirect(redirect_uri)
-
-# Route that users get redirected to when authorized
-@app.route('/authorize')
-def authorize():
-    token = oauth.twitter.authorize_access_token()
-    resp = oauth.twitter.get('account/verify_credentials.json')
-    resp.raise_for_status()
-    profile = resp.json()
-    # do something with the token and profile
-    return redirect('/')
         
 
 @app.route("/<usr>")
