@@ -91,6 +91,16 @@ def get_user_entries():
 
     return entries
 
+@app.route("/get_user_entries", methods = ["POST"])
+def get_user_entries():
+    request_data = request.get_json()
+    
+    user = request_data["uid"]
+    
+    entries = helper.get_todays_entries(user)
+
+    return entries
+
 @app.route("/<usr>")
 def user(usr):
     return usr

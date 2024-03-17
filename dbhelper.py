@@ -44,5 +44,16 @@ class dbhelper():
         return entries
     
     
+    def get_todays_entries(self, user_id):
+        entries = list()
+        for entry in self.journal_entries.find({"uid": user_id}):
+            entry_date_str = entry["time"]
+            entry_date = datetime.datetime.strptime(entry_date_str, '%Y-%m-%d %H:%M:%S')
+            entry_day = entry_date.date()
+
+            today = datetime.datetime.today().strftime("%Y-%m-%d")
+            if str(entry_day) == today:
+                entries.append(entry)
+        return entries
 
 
