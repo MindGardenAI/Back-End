@@ -3,6 +3,7 @@ import datetime
 from pymongo.mongo_client import MongoClient
 
 mongodb_pass = (os.getenv("MONGO_PASS"))
+mongodb_pass = "Kbt070322MDB"
 uri = f"mongodb+srv://bmattblake:{mongodb_pass}@cluster0.vk4vz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 # Create a new client and connect to the server
