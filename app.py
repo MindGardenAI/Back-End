@@ -85,7 +85,7 @@ def logout():
 
 
 
-@app.route("/add_entry", methods = ["POST"])
+@app.route("/add_entry", methods=["POST"])
 def add_entry():
     
     
@@ -97,7 +97,7 @@ def add_entry():
     out = helper.add_entry(user_id, body)
     return str(out)
 
-@app.route("/get_user_entries", methods = ["GET", "POST"])
+@app.route("/get_user_entries", methods=["GET", "POST"])
 def get_user_entries():
     request_data = request.get_json()
     
@@ -109,7 +109,7 @@ def get_user_entries():
     print(entries)
     return json.dumps(entries, default=str)
 
-@app.route("/get_todays_entries", methods = ["GET", "POST"])
+@app.route("/get_todays_entries", methods=["GET", "POST"])
 def get_todays_entries():
     request_data = request.get_json()
     
@@ -119,14 +119,17 @@ def get_todays_entries():
 
     return json.dumps(entries, default=str)
 
-@app.route("/add_goal", methods = ["GET", "POST"])
+@app.route("/add_goal", methods=["GET", "POST"])
 def add_goal():
     request_data = request.get_json()
     user = request_data["uid"]
     description = request_data["description"]
     complete_by_date = request_data["complete_by_date"]
     
-    return helper.add_goal(user, description, complete_by_date)
+    out =  helper.add_goal(user, description, complete_by_date)
+    
+    return str(out)
+
 
 @app.route("/get_user_goals", methods=["GET", "POST"])
 def get_user_goals():
