@@ -10,12 +10,6 @@ class dbhelper():
 
         # Create a new client and connect to the server
         client = MongoClient(uri)
-        # Send a ping to confirm a successful connection
-        try:
-            client.admin.command('ping')
-            print("Pinged your deployment. You successfully connected to MongoDB!")
-        except Exception as e:
-            print(e)
             
         self.db = client.MindGardenAI
         self.journal_entries = self.db.journal_entries
@@ -33,9 +27,16 @@ class dbhelper():
         return entry_id
 
     def get_entries(self):
-        self.title = input()
-        self.text = input()
-        self.time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        entries = list()
+        for entry in self.journal_entries.find():
+            entries.append(entry)
+        return entries
+    
+    def get_user_entries(self, user_id):
+        entries = list()
+        for entry in self.journal_entries.find({"uid": user_id}):
+            entries.append(entry)
+        return entries
     
     
 
