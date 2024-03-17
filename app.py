@@ -7,6 +7,7 @@ from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
 from openaihelper import OpenAiHelper
 
+
 assistant = OpenAiHelper()
 
 
@@ -68,14 +69,18 @@ def logout():
 
 @app.route("/add_entry", methods = ["POST"])
 def add_entry():
+    
+    
     request_data = request.get_json()
 
-    id = request_data["id"]
     title = request_data["title"]
+    body = request_data["body"]
+    
 
-    out = f"{id} + {title}"
+    out = f"{body} + {title}"
     return out
-        
+
+
 
 @app.route("/<usr>")
 def user(usr):
