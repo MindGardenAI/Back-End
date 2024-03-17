@@ -84,7 +84,7 @@ def logout():
     )
 
 
-@app.route("/add_goals", methods=["POST", "GET"])
+@app.route("/add_goal", methods=["POST", "GET"])
 def add_goal():
     if request.method == "GET":
         return "fizz"
