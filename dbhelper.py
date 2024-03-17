@@ -21,7 +21,12 @@ class dbhelper():
         except Exception as e:
             print(e)
 
-    def add_entry(self, uid, title, text):
+    def add_entry(self, title, text):
+        curr_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        entry_id = self.journal_entries.insert_one({"title": title, "time": curr_time, "text": text}).inserted_id
+        return entry_id
+    
+    def add_entry(self,uid, title, text):
         curr_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         entry_id = self.journal_entries.insert_one({"uid": uid, "title": title, "time": curr_time, "text": text}).inserted_id
         return entry_id
@@ -39,5 +44,16 @@ class dbhelper():
         return entries
     
     
+    def get_todays_entries(self, user_id):
+        entries = list()
+        for entry in self.journal_entries.find({"uid": user_id}):
+            entry_date_str = entry["time"]
+            entry_date = datetime.datetime.strptime(entry_date_str, '%Y-%m-%d %H:%M:%S')
+            entry_day = entry_date.date()
+
+            today = datetime.datetime.today().strftime("%Y-%m-%d")
+            if str(entry_day) == today:
+                entries.append(entry)
+        return entries
 
 

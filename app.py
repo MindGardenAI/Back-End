@@ -1,14 +1,17 @@
 import json
-from flask import Flask, request, url_for, redirect, render_template, session, url_for
+
+from flask import Flask, request, url_for, redirect, render_template, session, url_for, jsonify
 from authlib.integrations.flask_client import OAuth
 from os import environ as env
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
 from openaihelper import OpenAiHelper
+from dbhelper import dbhelper
+
 
 assistant = OpenAiHelper()
-
+helper = dbhelper()
 
 
 ENV_FILE = find_dotenv()
@@ -68,14 +71,35 @@ def logout():
 
 @app.route("/add_entry", methods = ["POST"])
 def add_entry():
+    
+    
     request_data = request.get_json()
 
-    id = request_data["id"]
     title = request_data["title"]
+    body = request_data["body"]
+    
+    out = helper.add_entry(title, body)
+    return str(out)
 
-    out = f"{id} + {title}"
-    return out
-        
+@app.route("/get_user_entries", methods = ["POST"])
+def get_user_entries():
+    request_data = request.get_json()
+    
+    user = request_data["uid"]
+    
+    entries = helper.get_user_entries(user)
+
+    return entries
+
+@app.route("/get_todays_entries", methods = ["POST"])
+def get_user_entries():
+    request_data = request.get_json()
+    
+    user = request_data["uid"]
+    
+    entries = helper.get_todays_entries(user)
+
+    return entries
 
 @app.route("/<usr>")
 def user(usr):
