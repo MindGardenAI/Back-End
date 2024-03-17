@@ -6,18 +6,9 @@ from authlib.integrations.flask_client import OAuth
 from os import environ as env
 from urllib.parse import quote_plus, urlencode
 from authlib.integrations.flask_client import OAuth
-from authlib.integrations.flask_oauth2 import ResourceProtector
-from validator import Auth0JWTBearerTokenValidator
 from dotenv import find_dotenv, load_dotenv
 from openaihelper import OpenAiHelper
 from dbhelper import dbhelper
-
-require_auth = ResourceProtector()
-validator = Auth0JWTBearerTokenValidator(
-    "dev-yy8fgw47geoyejns.us.auth0.com",
-    "https://mindgardenai.tech/"
-)
-require_auth.register_token_validator(validator)
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -58,36 +49,10 @@ oauth.register(
 )
 
 
-
-
-# @app.route("/api/private")
-# @require_auth(None)
-# def private():
-#     """A valid access token is required."""
-#     response = (
-#         "Hello from a private endpoint! You need to be"
-#         " authenticated to see this."
-#     )
-#     return jsonify(message=response)
-
-
-# @app.route("/api/private-scoped")
-# @require_auth("read:messages")
-# def private_scoped():
-#     """A valid access token and scope are required."""
-#     response = (
-#         "Hello from a private endpoint! You need to be"
-#         " authenticated and have a scope of read:messages to see"
-#         " this."
-#     )
-#     return jsonify(message=response)
-
-
-
 @app.route("/")
 def home():
-    return redirect("http://mindgardenai.tech")
-
+    return render_template("home.html", session=session.get('user'), pretty=json.dumps(session.get('user'), indent=4)
+)
 
 # Auth0 Code that i copied from the documentation
 @app.route("/login")
@@ -103,25 +68,24 @@ def callback():
     session["user"] = token
     return redirect("/")
 
-# @app.route("/logout")
-# def logout():
-#     session.clear()
-#     return redirect(
-#         "https://" + env.get("AUTH0_DOMAIN")
-#         + "/v2/logout?"
-#         + urlencode(
-#             {
-#                 "returnTo": url_for("home", _external=True),
-#                 "client_id": env.get("AUTH0_CLIENT_ID"),
-#             },
-#             quote_via=quote_plus,
-#         )
-#     )
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(
+        "https://" + env.get("AUTH0_DOMAIN")
+        + "/v2/logout?"
+        + urlencode(
+            {
+                "returnTo": url_for("home", _external=True),
+                "client_id": env.get("AUTH0_CLIENT_ID"),
+            },
+            quote_via=quote_plus,
+        )
+    )
 
 
 
 @app.route("/add_entry", methods = ["POST"])
-@require_auth(None)
 def add_entry():
     
     
@@ -134,7 +98,6 @@ def add_entry():
     return str(out)
 
 @app.route("/get_user_entries", methods = ["GET", "POST"])
-@require_auth(None)
 def get_user_entries():
     request_data = request.get_json()
     
@@ -147,7 +110,6 @@ def get_user_entries():
     return json.dumps(entries, default=str)
 
 @app.route("/get_todays_entries", methods = ["GET", "POST"])
-@require_auth(None)
 def get_todays_entries():
     request_data = request.get_json()
     
@@ -157,17 +119,27 @@ def get_todays_entries():
 
     return json.dumps(entries, default=str)
 
-# @app.route("/<usr>")
-# def user(usr):
-#     return usr
+@app.route("/add_goal", methods = ["GET", "POST"])
+def add_goal():
+    request_data = request.get_json()
+    user = request_data["uid"]
+    description = request_data["description"]
+    complete_by_date = request_data["complete_by_date"]
+    
+    return helper.add_goal(user, description, complete_by_date)
 
+@app.route("/get_user_goals", methods=["GET", "POST"])
+def get_user_goals():
+    request_data = request.get_json()
+    user = request_data["uid"]
+    goals = helper.get_user_goals(str(user))
+    return json.dumps(goals, default=str)
+    
 @app.route("/singleaffirmation")
-@require_auth(None)
 def singleaffirmation():
     return assistant.makeRandomAffirmation()
 
 @app.route("/guidedaffirmation", methods = ["POST"])
-@require_auth(None)
 def guidedaffirmation():
     data = request.json
     problem = data.get('problem')
