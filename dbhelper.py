@@ -25,6 +25,11 @@ class dbhelper():
         curr_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         entry_id = self.journal_entries.insert_one({"title": title, "time": curr_time, "text": text}).inserted_id
         return entry_id
+    
+    def add_entry(self,uid, title, text):
+        curr_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        entry_id = self.journal_entries.insert_one({"uid": uid, "title": title, "time": curr_time, "text": text}).inserted_id
+        return entry_id
 
     def get_entries(self):
         entries = list()

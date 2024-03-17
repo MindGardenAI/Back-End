@@ -87,7 +87,9 @@ def get_user_entries():
     
     user = request_data["uid"]
     
+    entries = helper.get_user_entries(user)
 
+    return entries
 
 @app.route("/<usr>")
 def user(usr):
